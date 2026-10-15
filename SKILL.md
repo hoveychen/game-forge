@@ -41,7 +41,7 @@ description: Use when the user wants to turn a game idea (often a single sentenc
 
 **6. 落盘并开跑。**
 - 新建项目目录，`GDD.md` 存 GDD 全文，`git init` 并提交。
-- 用 `fleet__spawn` 在该目录开新会话（没有 Fleet 时，在该目录起一个新的 Claude Code 会话，把 prompt 粘进去）。prompt = 技术指令一行 + 一个空行 + GDD 全文。**除此之外什么都不加。**
+- 用 `fleet__spawn` 在该目录开新会话（没有 Fleet 时，在该目录起一个新的 agent 会话，比如 Claude Code 或 Codex，把 prompt 粘进去）。prompt = 技术指令一行 + 一个空行 + GDD 全文。**除此之外什么都不加。**
 - 技术指令默认：`依赖GDScript的godot最新版，我要你从零写出这个游戏需要的引擎层（渲染、生成、动画、物理按需自研），来实现下面这个概念游戏。` 老板指定了别的技术栈就照他的。
 - 告诉老板会话 id 和目录，然后结束。执行会话自己会拆计划、自己续棒。
 

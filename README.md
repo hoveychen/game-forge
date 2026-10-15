@@ -1,8 +1,8 @@
 # game-forge
 
-一个 [Claude Code](https://docs.claude.com/en/docs/claude-code) skill：通过和你讨论，把一句话游戏想法写成一份足够具体的设计文档（GDD），然后把这份文档原样交给一个全新会话，**一次做出来**。
+一个 [Agent Skill](https://agentskills.io)（Claude Code、Codex、Cursor、Gemini CLI 等支持 SKILL.md 的 agent 都能用）：通过和你讨论，把一句话游戏想法写成一份足够具体的设计文档（GDD），然后把这份文档原样交给一个全新会话，**一次做出来**。
 
-*A Claude Code skill that turns a one-line game idea — through a design conversation with you — into a dense, vivid GDD modeled on a known-good exemplar, then hands that GDD verbatim to a fresh agent session to build in one shot.*
+*An [Agent Skill](https://agentskills.io) (works in Claude Code, Codex, Cursor, Gemini CLI and other SKILL.md-compatible agents) that turns a one-line game idea — through a design conversation with you — into a dense, vivid GDD modeled on a known-good exemplar, then hands that GDD verbatim to a fresh agent session to build in one shot.*
 
 ## 为什么是这样
 
@@ -26,11 +26,20 @@
 
 ## 安装
 
+用跨 agent 的安装器（会问你装给哪些 agent、装到项目还是全局）：
+
 ```bash
-git clone https://github.com/hoveychen/game-forge ~/.claude/skills/game-forge
+npx skills add hoveychen/game-forge
 ```
 
-然后在 Claude Code 里说「我想做一个……的游戏」，skill 就会自动触发。
+或者手动克隆到你的 agent 读 skill 的目录：
+
+```bash
+git clone https://github.com/hoveychen/game-forge ~/.claude/skills/game-forge   # Claude Code
+git clone https://github.com/hoveychen/game-forge ~/.agents/skills/game-forge   # Codex 等
+```
+
+然后在 agent 里说「我想做一个……的游戏」，skill 就会自动触发。
 
 ## 目录
 
