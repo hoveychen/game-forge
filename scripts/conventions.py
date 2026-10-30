@@ -1,28 +1,26 @@
 #!/usr/bin/env python3
-"""技术与开发约定：复制模板 → 核对 → 拼 prompt 并开执行会话。
+"""技术与开发约定：复制模板 → 核对 → 拼出执行会话的 prompt。
 
   python3 scripts/conventions.py init  <项目目录>
   python3 scripts/conventions.py check <项目目录>
-  python3 scripts/conventions.py spawn <项目目录> --title <会话标题>
+  python3 scripts/conventions.py prompt <项目目录>
 
 init  把 templates/CONVENTIONS.md 原样复制成 <项目目录>/CONVENTIONS.md，之后只用 Edit 改要换的条目。
 check 模板里每一句带禁止或限定语气的话（不要、不在、只用……）都必须逐字留在项目的 CONVENTIONS.md 里，
       每个条目的标题也必须在。确实要删的句子（比如老板换了引擎，GDScript 那句不再成立），
       把原句抄进 <项目目录>/CONVENTIONS.waived.md，一句一行，后面写「—— 理由」。
-spawn 先 check，通过后把 CONVENTIONS.md + 空行 + GDD.md 全文拼成 prompt，存到 .forge/spawn_prompt.md，
-      再用 fleet spawn 开会话；找不到 fleet 时只打印文件路径，把这个文件的全文原样粘进新会话。
+prompt 先 check，通过后把 CONVENTIONS.md + 空行 + GDD.md 全文拼成 prompt，存到 .forge/spawn_prompt.md。
+      脚本不开会话：拿这个文件的全文在项目目录开一个独立的顶层会话，怎么开见 SKILL.md 第 7 步。
 """
 import argparse
 import re
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 TEMPLATE = ROOT / "templates" / "CONVENTIONS.md"
 GUARD = ("不要", "不许", "不在", "不留", "别指望", "只有", "只用", "只留", "只加载", "不用")
-FLEET_APP = "/Applications/Claw Fleet.app/Contents/MacOS/fleet"
 
 
 def norm(s):
@@ -66,10 +64,8 @@ def check(proj):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["init", "check", "spawn"])
+    ap.add_argument("cmd", choices=["init", "check", "prompt"])
     ap.add_argument("project")
-    ap.add_argument("--title")
-    ap.add_argument("--dry-run", action="store_true", help="只拼 prompt，不开会话")
     a = ap.parse_args()
     proj = Path(a.project).expanduser().resolve()
 
@@ -93,19 +89,8 @@ def main():
     out.parent.mkdir(exist_ok=True)
     out.write_text(prompt)
     print(f"prompt 已写入 {out}（{len(prompt)} 字符）")
-
-    if a.dry_run:
-        return
-    fleet = shutil.which("fleet") or (FLEET_APP if Path(FLEET_APP).exists() else None)
-    if not fleet:
-        print("没找到 fleet：在该目录新开一个 agent 会话，把上面这个文件的全文原样粘进去，不要改写、不要只给路径。")
-        return
-    cmd = [fleet, "spawn", "--workspace", str(proj), "--prompt", prompt]
-    if a.title:
-        cmd += ["--title", a.title]
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    print(r.stdout.strip() or r.stderr.strip())
-    sys.exit(r.returncode)
+    print("下一步：在项目目录开一个独立的顶层会话，把这个文件的全文原样作为第一条消息，不改写、不只给路径。例如：")
+    print(f'  cd {proj} && claude "$(cat .forge/spawn_prompt.md)"')
 
 
 if __name__ == "__main__":

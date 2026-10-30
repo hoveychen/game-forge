@@ -129,4 +129,4 @@
 - 原则 4：网页 dpr 没有封顶；
 - 原则 10：运行时 `add_bus`。
 
-它也没有任何性能工具，结论全靠墙钟。完整盘点在作者本机 Fleet wiki 的 `yellow/performance/week-retro-vs-humanzoo`。
+它也没有任何性能工具，结论全靠墙钟。

@@ -53,12 +53,13 @@ description: Use when the user wants to turn a game idea (often a single sentenc
 - 新建项目目录，`GDD.md` 存 GDD 全文，`TEARDOWN.md` 存拆解笔记，模拟脚本和输出放 `sim/`，`git init` 并提交。
 - 技术与开发约定放在 `templates/CONVENTIONS.md`。在项目目录跑 `python3 <skill 目录>/scripts/conventions.py init <项目目录>`，把它原样复制成项目里的 `CONVENTIONS.md`。**不要自己重写这段约定，也不要凭记忆概括**——执行 agent 看到的只有这段文字，重写时最先丢的就是「不要……」的句子，禁止项一丢，它就会回到用代码画图、手工雕模型的老路。
 - 老板指定了别的技术栈、平台或性能目标，就用 Edit 只改涉及的那几处；要按项目补内容（比如这个项目的角色管线、额外的平台），往对应条目里加句子，或者新加一条。确实不再成立的原句（比如换了引擎，GDScript 那句没了意义），把原句抄进 `CONVENTIONS.waived.md`，一句一行，后面写「—— 理由」。
-- 开跑用 `python3 <skill 目录>/scripts/conventions.py spawn <项目目录> --title <会话标题>`。它先核对模板里每一句禁止或限定句都还在 `CONVENTIONS.md` 里（或者在 waived 里写了理由），没过就列出缺的原句，补回去再跑；通过后把 `CONVENTIONS.md` + 空行 + `GDD.md` 全文拼成 prompt（存一份在 `.forge/spawn_prompt.md`），用 `fleet spawn` 开会话。prompt 就是这两份文件的全文，**除此之外什么都不加**，也不要换成「请读某某文件」。没有 Fleet 时脚本只拼 prompt，在该目录起一个新的 agent 会话（Claude Code、Codex 等），把 `.forge/spawn_prompt.md` 的全文原样粘进去。
-- 告诉老板会话 id 和目录，然后结束。执行会话自己会拆计划、自己续棒。
+- 拼 prompt 用 `python3 <skill 目录>/scripts/conventions.py prompt <项目目录>`。它先核对模板里每一句禁止或限定句都还在 `CONVENTIONS.md` 里（或者在 waived 里写了理由），没过就列出缺的原句，补回去再跑；通过后把 `CONVENTIONS.md` + 空行 + `GDD.md` 全文拼成 prompt，存到 `.forge/spawn_prompt.md`。prompt 就是这两份文件的全文，**除此之外什么都不加**，也不要换成「请读某某文件」。
+- 开跑：拿 `.forge/spawn_prompt.md` 的全文，在项目目录开一个**独立的顶层会话**，全文原样作为第一条消息。不要开成规划对话的子代理或子任务：执行要跑很多小时、自己续棒，挂在规划对话底下，用户在自己的会话列表里找不到它，规划对话一结束它也可能跟着断。怎么开取决于你所在的环境，用它自己建独立会话的办法；终端里的 Claude Code 是 `cd <项目目录> && claude "$(cat .forge/spawn_prompt.md)"`，Codex 等同理。当前环境开不了新会话，就把这条命令交给用户自己跑，不要退而求其次在规划对话里接着做。
+- 告诉老板会话在哪、目录在哪，然后结束。执行会话自己会拆计划、自己续棒。
 
 ## 参考
 
-- `templates/CONVENTIONS.md` — 技术与开发约定的模板；`scripts/conventions.py` 负责复制、核对、拼 prompt 并开会话（第 7 步）。
+- `templates/CONVENTIONS.md` — 技术与开发约定的模板；`scripts/conventions.py` 负责复制、核对、拼 prompt（第 7 步），不负责开会话。
 - `references/teardown.md` — 拆解标杆和纸面模拟怎么做：选哪几款、拆什么、来源经验、时间预算、拆解怎么进入逼问和 GDD。**第 2 步前必读。**
 - `references/exemplars/kairo-teardown.md` — 拆解范例：三款开罗游戏的七条共同骨架，外加一处「偏离原作拿掉了什么功能」的示例。
 - `references/writing.md` — GDD 的结构、写法、品类差异、美术路线、自检清单。**写 GDD 前必读。**
